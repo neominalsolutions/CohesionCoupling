@@ -9,6 +9,23 @@ namespace SolidPriciples.Controllers
   [ApiController]
   public class SampleController : ControllerBase
   {
+    // IoC tanımlamsı yaptıktan sonraki kısımda ilgili service erişmek için DI kullanıyoruz böylece Application bizim için ilgili sınıfları instance belirlediğimiz scope'a göre otomatik olarak alıyor, Transient (Session Bazlı İşlemler, Event Handling gibi işlemler.),Scoped (Web Request),Singleton (Application Bazlı Tek Instance)
+
+    private readonly HighCohesionAndLowCouplingSample hclc;
+
+    // DI ile otomatik üretilen instance üzerinden çalıştık. (IoC olarak tanımladığı için artık bu şekilde bir yöntem ile farklı sınıfların birbirleri ile çalışmasını sağlayacağız.)
+    public SampleController(HighCohesionAndLowCouplingSample hclc)
+    {
+      this.hclc = hclc;
+    }
+
+    [HttpGet("submitOrder")]
+    public IActionResult SubmitOrder()
+    {
+      this.hclc.SubmitOrder(new Order("ALI"), "2342342");
+
+      return Ok();
+    }
 
     [HttpGet]
     public IActionResult Sample()
@@ -44,10 +61,6 @@ namespace SolidPriciples.Controllers
       HighCohesionAndLowCouplingSample hs2 = new HighCohesionAndLowCouplingSample(emailService1, orderRepo1, discount1);
 
       hs2.SubmitOrder(new Order("ALI"), "32432432");
-
-
-
-
 
 
       return Ok();
